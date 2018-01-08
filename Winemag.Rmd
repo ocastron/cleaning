@@ -24,10 +24,10 @@ library(car)
 
 L’objectiu d’aquesta activitat serà el tractament d’un dataset, que pot ser el creat a la pràctica 1 o bé qualsevol dataset lliure disponible a Kaggle (https://www.kaggle.com). Les diferents tasques a realitzar (i justificar) són les següents:
 
+# Descripció del dataset. Perquè és important i quina pregunta/problema pretèn respondre?
+
 Per aquesta activitat triem un dataset de kaggle, concretament, un sobre vins que es pot trobar a 
 https://www.kaggle.com/zynicide/wine-reviews
-
-# Descripció del dataset. Perquè és important i quina pregunta/problema pretèn respondre?
 
 A l'adreça anterior trobarem dos datasets, enlloc d'un, i treballarem amb els dos, per poder tenir un major nombre de mostres de vins. El primer dataset que trobem conté més de 150 mil vins i no conté tots els camps. El segon dataset conté una mica menys de 130 mil mostres i disposa de tres camps més que l'anterior.
 
@@ -125,7 +125,7 @@ Veiem que tant country com province contenen el mateix nombre d'elements buits i
 
 Pel que fa a preu tenim diverses opcions:
 
-1. Intentar aconseguir els preus originals de la web original.
+1. Intentar aconseguir els preus originals d'internet.
 
 2. Mirar d'assignar valor a aquests camps per mitjà d'algun algorisme, per exemple kNN.
 
@@ -139,7 +139,7 @@ Per últim, veiem que només tenim una mostra sense variety, mirem la web origin
 
 veurem que es tracta d'un Petite Syrah, per tant, assignarem aquesta varietat al camp variety.
 
-Pel que fa als valors extrems comprovarem si price, l'únic camp numèric que tenim, en té.
+Pel que fa als valors extrems comprovarem si price, l'únic camp numèric que pot tenir-ne, en conté.
 
 ```{r 2.2.2}
 boxplot(wine.a$price)
@@ -180,15 +180,15 @@ res <- sapply(wine.a, class)
 kable(data.frame(variables=names(res), classe=as.vector(res)))
 ```
 
-L'únic tipus que haurem de canviar és el de points, ja que és una variable quantitativa, encara que estigui representada per valors numérics sencers.
+L'únic tipus que haurem de canviar és el de points, ja que está representada per valors sencers i ens interesarà possarla com numeric per si tenim que fer la mitja o un altre càlcul respecte les variables factor.
 
 ```{r 2.2.6}
-wine.a$points <- as.factor(wine.a$points)
+wine.a$points <- as.numeric(wine.a$points)
 res <- sapply(wine.a, class)
 kable(data.frame(variables=names(res), classe=as.vector(res)))
 ```
 
-Ara que ja tenim els tipus de variable correctament assignats procedim a normalitzar/estandarditzar.
+Ara que ja tenim els tipus de variable correctament assignats procedim a normalitzar/estandarditzar les variables factor.
 
 ```{r 2.2.7}
 txtvar <- c("country", "province", "variety", "winery")
@@ -233,38 +233,61 @@ Veiem que aquesta varietat es presenta amb diferents noms. El mateix ens passar�
 
 Reassignarem algunes varietat, tot i que, per no allargar més la neteja (i la pràctica) només juntarem les que veiem són formes diferents d'escriure una mateixa varietat, com per exemple shirah i shyrah. Però deixarem aquelles que tot i ser la mateixa varietat rebin diferents noms en diferents Denominacions d'Origen (DO), com per exemple shiraz, que és el nom australià de la varietat syrah com podem veure a https://www.leaf.tv/articles/what-is-a-shiraz-wine/.
 
-Pel que fa als vins formats per més d'una varietat mantindrem l'ordre, és a dir, si tenim les varietats syrah tempranillo (mostra [28]) la considerarem diferent a tempranillo syrah (mostra [31]), ja que indica que la varietat dominant en el vi és la primera i, per tant, el vi tindrà propietats diferents.
+Pel que fa als vins formats per més d'una varietat mantindrem l'ordre, és a dir, si tenim les varietats syrah tempranillo (mostra [28]) la considerarem diferent a tempranillo syrah (mostra [31]), ja que indica que la varietat dominant en el vi és la primera i, per tant, el vi tindrà propietats/qualitats diferents.
 
-Per tant, després d'examinar les varietats actuals durem a terme els canvis següents:
+Després d'examinar les varietats actuals durem a terme els canvis següents:
 
 aragones, aragonez = aragones
+
 assyrtico, assyrtiko = assyrtiko
+
 carignan, carignane, carignano = carignan
+
 chardonel, chardonelle = chardonel
+
 durella, durello = durella
+
 insolia, inzolia = inzolia
+
 malagousia, malagouzia = malagouzia
+
 malvasia, mavazija = malvasia
+
 moscatel, muscatel = moscatel
+
 moschofilero, moscofilero = moschofilero
+
 muscadel, muscadelle = muscadel
+
 muscat blanc a petits grains, muscat blanc a petit grain = muscat blanc a petit grain
+
 muscat, muskat = muskat
+
 petit verdot, petite verdot = petite verdot
+
 pinot bianco, pinot blanc = pinot blanc
+
 pinot nero, pinot noir = pinto noir
+
 pinot grigio, pinot gris = pinot gris
+
 sirah, syrah = syrah 
+
 tinta de toro, tinta del toro = tinta de toro
+
 tinta fina, tinto fino = tinta fina
+
 tinta del pais, tinto del pais = tinta del pais
+
 tocai, tokay = tokay
+
 vranac, vranec = vranac
 
 ```{r 2.2.9}
 o.variety <- c("aragonez", "assyrtico", "chardonelle", "durello", "insolia", "malagousia", "malvazija", "muscat blanc a petits grains", "muscatel", "moscofilero", "muscadelle", "petit verdot", "pinot bianco", "pinot nero", "tinta del toro", "tinto fino", "tinto del pais", "vranec")
+
 n.variety <- c("aragones", "assyrtiko", "chardonel", "durella", "inzolia", "malagouzia", "malvasia", "muscat blanc a petit grain",  "moscatel", "moschofilero", "muscadel", "petite verdot", "pinot blanc", "pinot noir", "tinta de toro", "tinta fina", "tinta del pais", "vranac")
-#wine.a <- w.net # ELIMINAR ABANS D'ENTREGAR!!!!!!
+
 # ho farem en dos vegades
 # primer els que no presenten modficacions 
 for(n in 1:length(o.variety)) {
@@ -340,7 +363,7 @@ Per a respondre la pregunta de l'apartat 1 ens quedarem amb els camps country, p
 
 Per obtenir la relació qualitat/preu emprarem points/price les quals relaciorem amb province i variety per mirar de respondre la pregunta plantejada. Per tant, un altre grup de dades que podem analitzar son les varietats per pais.
 
-Uns altres grups que podriem analitzar seria puntuació i preus per pais o qulitat per pais.
+Uns altres grups que podriem analitzar seria puntuació i preus per pais o qualitat per pais.
 
 Generem el data frame final.
 
@@ -364,40 +387,66 @@ El resum, entre altres coses, ens mostra com no tenim camps buits.
 ## Comprovació de la normalitat i homogeneïtat de la variància. Si és necessari (i possible), aplicar transformacions que normalitzin les dades.
 
 ```{r 3.2}
-# comprovem la normalitat de la variància amb el test de Lavene per a la qualitat/preu
-with(wine.final, tapply(price, points, var, na.rm=TRUE))
-leveneTest(price~points, data = wine.final, center = "median")
+# comprovem la normalitat de la variància amb el test de Levene per a la qualitat/preu
+with(wine.final, tapply(price, country, var, na.rm=TRUE))
+leveneTest(price~country, data = wine.final, center = "median")
 ```
 
 Com ja haviem suposat no tenim homogeneïtat, ja que el p-valor és menor a 0.05. Això és deu al preu elevat d'alguns vins, recordem que tenim més de 9500 valors extrems.
 
-No normalitzarem, atés que ens interesen els preus tal com s'ens presenten.
+No normalitzarem, atés que el que estem buscant és una relació qualitat-preu i, per tant, volem mantenir la relació actual.
 
 ## Aplicació de proves estadístiques (tantes com sigui possible) per comparar els grups de dades.
 # Representació dels resultats a partir de taules i gràfiques.
 
-```{r 3.2}
+```{r 3.2.1}
+# en el nostre cas definirem la relació qualitat-preu com el nombre de punts dividit entre el preu
+qual.preu <- wine.final$points/wine.final$price
 
+plot(density(qual.preu), main="densitat qualitat/preu")
+polygon(density(qual.preu), col="light blue", border="blue") 
+boxplot(qual.preu, main="qualitat/preu", col="red")
+
+summary(qual.preu)
+```
+
+A partir d'aquestes gràfiques podem veure que els vins amb major qualitat-preu són aquells que és consideren valors extrems.
+
+Relacionem ara aquests valors amb els països d'origen i el tipus de raïm.
+
+```{r 3.2.2}
+
+#qual.preu.extrem <- boxplot.stats(qual.preu)$out
+# obtenim els indexs dels valors extrems
+qual.preu.iextrem  <- which(qual.preu  %in%  boxplot.stats(qual.preu)$out)
+# i obtenim els paisos als que pertanyen aquests vins
+country.extrem <- droplevels(wine.final[qual.preu.iextrem, "country"])
+
+# els mostrem gràfica i numèricament
+plot(country.extrem, main= "paisos amb millor qualitat-preu", col="gold")
+sort(table(country.extrem), decreasing = TRUE)
+```
+
+Ens queda ara obtenir les varietats de raim que ens proporcionaran millor qualitat-preu.
+
+```{r 3.2.3}
+# primerament i igual que amb països obtenim les varietats d'aquests vins
+variety.extrem <- droplevels(wine.final[qual.preu.iextrem, "variety"])
+
+# els mostrem gràfica i numèricament
+plot(variety.extrem, main= "varietats amb millor qualitat-preu", col="dark green")
+sort(table(variety.extrem), decreasing = TRUE)
+```
+
+I, finalment, mostrem una taula amb la relació de les varietats segons els seu país.
+
+```{r 3.2.4}
+# mostrem-les ara conjuntament
+table(variety.extrem, country.extrem)
 ```
 
 # Resolució del problema. A partir dels resultats obtinguts, quines són les conclusions? Els resultats permeten respondre al problema?
 
+A partir de la taula final podem veure quins paisos ens donen millor qualitat preu per a cada varietat. Observem, també, que tenim varietats que no es troben en cap dels països anteriors i, per tant, no obtenim informació sobre elles.
 
-
-
-```{r proves}
-!complete.cases(wine.a[,"price"])
-
-```
-
-```{r proves2}
-#sort(unique(wine$variety))
-#winet <- winet[!duplicated(winet), ]
-#dim(winet)
-#summary(winet)
-#wp <- as.matrix(sort(table(winet$price), decreasing = TRUE))
-#length(wp)
-#kable(wp[1:50,], format="markdown", col.names = "total botellas de este importe")
-write.csv(wine.final, file = "./csv/winefinal.csv", row.names = FALSE)
-```
-
+Amb l'estudi realitzat el responen parcialment, però creiem és un bon inici i amb uns coneixements més amplis del programari segurament podriem obtenir millors resultats.
